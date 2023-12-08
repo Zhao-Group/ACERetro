@@ -1,0 +1,1 @@
+{"explored_rxns": {"COCCO[C@H](C)OCc1ccccc1": []}, "explored_nodes": {"COCCO[C@H](C)OCc1ccccc1": []}, "start_node": {"id": "COCCO[C@H](C)OCc1ccccc1", "type": "chemical", "score": 118.1895003862225, "sfscore": [0.5981215834617615, 0.4010918438434601], "depth": -1, "terminal": false}}

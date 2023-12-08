@@ -1,0 +1,1 @@
+{"explored_rxns": {"COc1c(OC)c(OC)c2c3c(cc4ccccc42)NC(=O)c13": []}, "explored_nodes": {"COc1c(OC)c(OC)c2c3c(cc4ccccc42)NC(=O)c13": []}, "start_node": {"id": "COc1c(OC)c(OC)c2c3c(cc4ccccc42)NC(=O)c13", "type": "chemical", "score": 225.80440249509172, "sfscore": [0.5917388200759888, 0.40721821784973145], "depth": -1, "terminal": false}}

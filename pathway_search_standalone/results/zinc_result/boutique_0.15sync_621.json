@@ -1,0 +1,1 @@
+{"explored_rxns": {"C=CCNS(=O)(=O)c1cc(S(N)(=O)=O)c(Cl)cc1/N=C/C=C(/C)O": []}, "explored_nodes": {"C=CCNS(=O)(=O)c1cc(S(N)(=O)=O)c(Cl)cc1/N=C/C=C(/C)O": []}, "start_node": {"id": "C=CCNS(=O)(=O)c1cc(S(N)(=O)=O)c(Cl)cc1/N=C/C=C(/C)O", "type": "chemical", "score": 235.1510153071851, "sfscore": [0.6073182225227356, 0.3891623318195343], "depth": -1, "terminal": false}}
