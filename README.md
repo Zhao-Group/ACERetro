@@ -45,8 +45,6 @@ Create Conda environment though `conda env create -f ./process_reaction_database
 
 `evalueate_score/benchmark_askcos_results.ipynb`: SFScore results on pathways predicted by ASKCOS-hybrid (<https://github.com/itai-levin/hybmind>) in Nat Commun 13, 7747 (2022). (<https://doi.org/10.1038/s41467-022-35422-y>)
 
-The processed molecule embedding data and ASKCOS benchmark data available in [Figshare]()
-
 ## **AceRetro** (***A***synchronous ***C***hemo***E***nzymatic ***Retro***synthesis)
 
 ### Install/Build
