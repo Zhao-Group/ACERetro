@@ -1,6 +1,6 @@
 # Synthetic field guided asynchronous chemoenzymatic synthesis planning 
 
-This repository includes the scripts used for the manuscript ["Synthetic field guided asynchronous chemoenzymatic synthesis planning."](http://www.google.com)
+This repository includes the scripts used for the manuscript "Synthetic field guided asynchronous chemoenzymatic synthesis planning."
 
 **AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool. 
 
@@ -45,7 +45,9 @@ Create Conda environment though `conda env create -f ./process_reaction_database
 
 `evalueate_score/benchmark_askcos_results.ipynb`: SFScore results on pathways predicted by ASKCOS-hybrid (<https://github.com/itai-levin/hybmind>) in Nat Commun 13, 7747 (2022). (<https://doi.org/10.1038/s41467-022-35422-y>)
 
-## **AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis)
+The processed molecule embedding data and ASKCOS benchmark data available in [Figshare]()
+
+## **AceRetro** (***A***synchronous ***C***hemo***E***nzymatic ***Retro***synthesis)
 
 ### Install/Build
 Create Conda environment though `conda env create -f ./pathway_search_standalone/environment.yml`. To meet the installation requirements of ASKCOS and RXN4Chemistry, the environment is different from the previous training environment.
@@ -66,9 +68,18 @@ hybridSearch = hybridSearch()
 smi = 'CC[C@@H](CO)NCCN[C@@H](CC)CO' # Target molecule's SMILES
 explored_rxns, explored_nodes, start_node = hybridSearch.get_chemoenzy_path_async(smi, max_depth=10, chem_topk=10, max_num_templates=250, max_branching=15, time_lim=180)
 ```
+To process the search result:
+```python
+# ./pathway_search_standalone/
+from scripts.search_utils import build_graph_from_async
+import networkx as nx
+graph_json = build_graph_from_async(explored_rxns,explored_nodes,start_node)
+g = nx.node_link_graph(graph_json) # reaction graph
+# Check ./pathway_search_standalone/result_processing.ipynb to extract synthesis routes from reaction graph 
+```
 
-### Pathway search
+### Pathway search in the manuscript
 
-`pathway_search_standalone/search_rxn4chemistry_askcos.ipynb`: Search hybrid pathways to 1k molecules from ZINC and case studies.
+`pathway_search_standalone/search_rxn4chemistry_askcos.ipynb`: Search hybrid pathways to 1k molecules from ZINC (Fig. 5) and case studies (Fig. 6,7,8).
 
 `pathway_search_standalone/result_processing.ipynb`: Process the search results and translate graphs to readable pathways
