@@ -1,6 +1,16 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10578664.svg)](https://doi.org/10.5281/zenodo.10578664)
+
+<div align='center'>
+<picture>
+  <source srcset="assets/aceretro_logo.png" width='50%'>
+  <img alt="ACERetro logo" src="/assets/" width="50%" >
+</picture>
+</div>
+
+
 # Synthetic field guided asynchronous chemoenzymatic synthesis planning 
 
-This repository includes the scripts used for the manuscript "Synthetic field guided asynchronous chemoenzymatic synthesis planning."
+This repository includes the scripts used for the manuscript **"Synthetic field guided asynchronous chemoenzymatic synthesis planning."**
 
 **AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool. 
 
@@ -48,7 +58,7 @@ Create Conda environment though `conda env create -f ./process_reaction_database
 ## **AceRetro** (***A***synchronous ***C***hemo***E***nzymatic ***Retro***synthesis)
 
 ### Install/Build
-Create Conda environment though `conda env create -f ./pathway_search_standalone/environment.yml`. To meet the installation requirements of ASKCOS and RXN4Chemistry, the environment is different from the previous training environment.
+Create Conda environment though `conda env create -f ./pathway_search_standalone/environment.yml`. To meet the installation requirements of both ASKCOS and RXN4Chemistry, the environment requires `python=3.6`.
 
 Installation of ASKCOS ([Nat Commun, 13, 7747 (2022)](https://doi.org/10.1038/s41467-022-35422-y)):
 - Download ASKCOS (<https://github.com/xuanliugit/askcos-core/tree/aceretro>) to `pathway_search_standalone/askcos-core`
