@@ -23,6 +23,9 @@ Dependencies
 - rdkit-pypi==2022.3.5
 - map4==1.0 (MAP4 is not required if only ECFP4 embedding is used)
 
+Operating systems
+- Ubuntu 20.04.5 LTS
+
 `./sfscore/sfscore.py` shows the basic usage. If you want to use SFScore elsewhere, follow the steps below.
 
 ```python
@@ -43,13 +46,13 @@ The scripts and checkpoints of trained models are in `./process_reaction_databas
 
 Create Conda environment though `conda env create -f ./process_reaction_database/environment.yml`
 
-`process_reaction_database/fingerprint_embedding.ipynb`: Process USPTO and ECREACT database. Process ECFP4 and MAP4 fingerprint embedding.
+`process_reaction_database/fingerprint_embedding.ipynb`: Process USPTO and ECREACT database. Process ECFP4 and MAP4 fingerprint embedding. (Cost around 40 min)
 
 `process_reaction_database/model_training.ipynb`: SFScore model training and results processing.
 
 ### Benchmarking SFScore
 
-`evalueate_score/benchmark_zinc_one_step.ipynb`: SFScore results and one-step retrosynthesis(RXN4Chemistry)/retrobiosynthesis(ASKCOS-Enzy) on 11K molecules from ZINC database (Please refer to the next section for retrosynthesis/retrobiosynthesis).
+`evalueate_score/benchmark_zinc_one_step.ipynb`: SFScore results and one-step retrosynthesis(RXN4Chemistry)/retrobiosynthesis(ASKCOS-Enzy) on 11K molecules from ZINC database (Cost ~ 43.5 hours) (Please refer to the next section for one-step retrosynthesis/retrobiosynthesis prediction).
 
 `evalueate_score/process_zinc_one_step.ipynb`: Process one-step retrosynthesis results.
 
@@ -74,6 +77,7 @@ Installation of RXN4Chemistry ([Digital Discovery, 2023,2, 489-501](https://doi.
 from scripts.search_utils import hybridSearch
 hybridSearch = hybridSearch()
 smi = 'CC[C@@H](CO)NCCN[C@@H](CC)CO' # Target molecule's SMILES
+# Conduct a 3 min asynchronous chemoenzymatic synthesis planning
 explored_rxns, explored_nodes, start_node = hybridSearch.get_chemoenzy_path_async(smi, max_depth=10, chem_topk=10, max_num_templates=250, max_branching=15, time_lim=180)
 ```
 To process the search result:
@@ -88,6 +92,6 @@ g = nx.node_link_graph(graph_json) # reaction graph
 
 ### Pathway search in the manuscript
 
-`pathway_search_standalone/search_rxn4chemistry_askcos.ipynb`: Search hybrid pathways to 1k molecules from ZINC (Fig. 5) and case studies (Fig. 6,7,8).
+`pathway_search_standalone/search_rxn4chemistry_askcos.ipynb`: Search hybrid pathways to 1k molecules from ZINC (Fig. 5) (around 6.25 days) and case studies (Fig. 6,7,8).
 
-`pathway_search_standalone/result_processing.ipynb`: Process the search results and translate graphs to readable pathways
+`pathway_search_standalone/result_processing.ipynb`: Process the search results and translate graphs to readable pathways (less than 5 min)
