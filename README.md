@@ -18,6 +18,7 @@ This repository includes the scripts used for the manuscript **"Synthetic field 
 
 ### Usage
 Dependencies
+- python=3.9.12
 - numpy=1.21.5
 - pytorch=1.12.1
 - rdkit-pypi==2022.3.5
