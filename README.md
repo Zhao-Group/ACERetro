@@ -18,6 +18,7 @@ This repository includes the scripts used for the manuscript **"Synthetic field 
 
 ### Usage
 Dependencies
+- conda=22.9.0
 - python=3.9.12
 - numpy=1.21.5
 - pytorch=1.12.1
@@ -58,15 +59,13 @@ The scripts and checkpoints of trained models are in `./process_reaction_databas
 
 `evalueate_score/benchmark_zinc_one_step.ipynb`: SFScore results and one-step retrosynthesis(RXN4Chemistry)/retrobiosynthesis(ASKCOS-Enzy) on 11K molecules from ZINC database (Cost ~ 43.5 hours) (Please refer to the next section for one-step retrosynthesis/retrobiosynthesis prediction).
 
-`evalueate_score/process_zinc_one_step.ipynb`: Process one-step retrosynthesis results.
+`evalueate_score/process_zinc_one_step.ipynb`: Process one-step retrosynthesis results. (Fig. 2)
 
-`evalueate_score/benchmark_askcos_results.ipynb`: SFScore results on pathways predicted by ASKCOS-hybrid (<https://github.com/itai-levin/hybmind>) in Nat Commun 13, 7747 (2022). (<https://doi.org/10.1038/s41467-022-35422-y>)
+`evalueate_score/benchmark_askcos_results.ipynb`: SFScore results on pathways predicted by ASKCOS-hybrid (<https://github.com/itai-levin/hybmind>) in Nat Commun 13, 7747 (2022). (<https://doi.org/10.1038/s41467-022-35422-y>) (Fig. 3 and ASKCOS pathways in Fig. 5)
 
 ## **AceRetro** (***A***synchronous ***C***hemo***E***nzymatic ***Retro***synthesis)
 
 ### Install/Build
-Create Conda environment though `conda env create -f ./pathway_search_standalone/environment.yml`. To meet the installation requirements of both ASKCOS and RXN4Chemistry, the environment requires `python=3.6`.
-
 Installation of ASKCOS ([Nat Commun, 13, 7747 (2022)](https://doi.org/10.1038/s41467-022-35422-y)):
 - Download ASKCOS (<https://github.com/xuanliugit/askcos-core/tree/aceretro>) to `pathway_search_standalone/askcos-core`
 - Download ASKCOS data (<https://github.com/xuanliugit/askcos-data>) to `pathway_search_standalone/askcos-core/askcos/data`
@@ -74,6 +73,25 @@ Installation of ASKCOS ([Nat Commun, 13, 7747 (2022)](https://doi.org/10.1038/s4
 Installation of RXN4Chemistry ([Digital Discovery, 2023,2, 489-501](https://doi.org/10.1039%2Fd2dd00110a)): 
 - Download RXN4Chemistry (<https://github.com/xuanliugit/rxn_cluster_token_prompt/tree/aceretro>) to `pathway_search_standalone/rxn_cluster_token_prompt`
 - RXN4Chemistry's model is the intellectual property of IBM, which is not open-source but available in <https://rxn.res.ibm.com>. To use the open-source models download them in `pathway_search_standalone/rxn_cluster_token_prompt/models` following this [link](https://doi.org/10.6084/m9.figshare.20121944.v1).
+
+```
+# Create environmentt
+conda create -n aceretro python=3.6.13
+conda activate aceretro
+pip install rdkit-pypi
+
+# Install packages for ASKCOS
+pip install -r ./pathway_search_standalone/askcos-core/requirements.txt
+
+# Install packages for RXN4Chemistry
+cd pathway_search_standalone/rxn_cluster_token_prompt
+pip install -e .
+
+# Install other packages
+pip install pubchempy==1.0.4
+pip install git+https://github.com/reymond-group/map4@v1.0
+conda install -c tmap tmap
+```
 
 ### Usage
 ```python
