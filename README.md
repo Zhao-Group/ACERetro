@@ -29,6 +29,10 @@ Operating systems
 
 `./sfscore/sfscore.py` shows the basic usage. If you want to use SFScore elsewhere, follow the steps below.
 
+Create Conda environment though `conda env create -f ./process_reaction_database/environment.yml`
+
+Activate Conda environment `conda activate sfscore_train`
+
 ```python
 sfscore_path = [PROJECT_DIRECTORY]/'sfscore' # replace PROJECT_DIRECTORY
 import sys
@@ -38,18 +42,17 @@ sfscore_model = SFScore()
 # load the model in 'process_reaction_database/saved_model/ecfp4_4096_3_layer_epoch10.pt' by default
 sfscore_model.load() 
 smiles = 'O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO'
-sfscore = sfscore_model.score_from_smi(smi)
+sfscore = sfscore_model.score_from_smi(smiles)
 print('SMILES:',smiles,', SFScore:',sfscore)
+# SMILES: O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO , SFScore: [0.4322359 0.6146086]
 ```
 
 ### Training the SFScore model
 The scripts and checkpoints of trained models are in `./process_reaction_database`.
 
-Create Conda environment though `conda env create -f ./process_reaction_database/environment.yml`
+`process_reaction_database/fingerprint_embedding.ipynb`: Process USPTO and ECREACT database. Process ECFP4 and MAP4 fingerprint embedding. (~ 2h)
 
-`process_reaction_database/fingerprint_embedding.ipynb`: Process USPTO and ECREACT database. Process ECFP4 and MAP4 fingerprint embedding. (Cost around 40 min)
-
-`process_reaction_database/model_training.ipynb`: SFScore model training and results processing.
+`process_reaction_database/model_training.ipynb`: SFScore model training and results processing. (~ 40 min)
 
 ### Benchmarking SFScore
 
@@ -77,9 +80,9 @@ Installation of RXN4Chemistry ([Digital Discovery, 2023,2, 489-501](https://doi.
 # ./pathway_search_standalone/
 from scripts.search_utils import hybridSearch
 hybridSearch = hybridSearch()
-smi = 'CC[C@@H](CO)NCCN[C@@H](CC)CO' # Target molecule's SMILES
+smiles = 'CC[C@@H](CO)NCCN[C@@H](CC)CO' # Target molecule's SMILES
 # Conduct a 3 min asynchronous chemoenzymatic synthesis planning
-explored_rxns, explored_nodes, start_node = hybridSearch.get_chemoenzy_path_async(smi, max_depth=10, chem_topk=10, max_num_templates=250, max_branching=15, time_lim=180)
+explored_rxns, explored_nodes, start_node = hybridSearch.get_chemoenzy_path_async(smiles, max_depth=10, chem_topk=10, max_num_templates=250, max_branching=15, time_lim=180)
 ```
 To process the search result:
 ```python
