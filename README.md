@@ -67,12 +67,38 @@ The scripts and checkpoints of trained models are in `./process_reaction_databas
 
 ### Install/Build
 Installation of ASKCOS ([Nat Commun, 13, 7747 (2022)](https://doi.org/10.1038/s41467-022-35422-y)):
-- Download ASKCOS (<https://github.com/xuanliugit/askcos-core/tree/aceretro>) to `pathway_search_standalone/askcos-core`
-- Download ASKCOS data (<https://github.com/xuanliugit/askcos-data>) to `pathway_search_standalone/askcos-core/askcos/data`
+- Download ASKCOS (<https://github.com/xuanliugit/askcos-core/tree/aceretro>) to `./pathway_search_standalone/askcos-core`
+- Download ASKCOS data (<https://github.com/xuanliugit/askcos-data>) to `./pathway_search_standalone/askcos-core/askcos/data`
+
+```
+# Download ASKCOS
+## Directory: ./pathway_search_standalone
+git clone https://github.com/xuanliugit/askcos-core.git
+## Change branch to aceretro
+cd askcos-core
+git switch aceretro
+
+# Download ASKCOS data
+## Directory: ./pathway_search_standalone/askcos-core/askcos/
+git lfs clone https://github.com/xuanliugit/askcos-data.git
+## Rename 'askcos-data' to 'data'
+mv askcos-data data
+```
 
 Installation of RXN4Chemistry ([Digital Discovery, 2023,2, 489-501](https://doi.org/10.1039%2Fd2dd00110a)): 
 - Download RXN4Chemistry (<https://github.com/xuanliugit/rxn_cluster_token_prompt/tree/aceretro>) to `pathway_search_standalone/rxn_cluster_token_prompt`
 - RXN4Chemistry's model is the intellectual property of IBM, which is not open-source but available in <https://rxn.res.ibm.com>. To use the open-source models download them in `pathway_search_standalone/rxn_cluster_token_prompt/models` following this [link](https://doi.org/10.6084/m9.figshare.20121944.v1).
+
+```
+# Download RXN4Chemistry
+## Directory: ./pathway_search_standalone
+git clone https://github.com/xuanliugit/rxn_cluster_token_prompt.git
+## Change branch to aceretro
+cd rxn_cluster_token_prompt
+git switch aceretro
+
+## Model Directory: ./pathway_search_standalone/rxn_cluster_token_prompt/models
+```
 
 ```
 # Create environmentt
