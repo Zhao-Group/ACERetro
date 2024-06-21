@@ -29,21 +29,7 @@ RUN pip install opennmt-py==2.3.0
 COPY . /app
 RUN pip install -e pathway_search_standalone/rxn_cluster_token_prompt
 
-# # Install dependencies with pip
-# RUN /bin/bash -c "source ~/.bashrc && conda activate custom_env && pip install --no-deps -r requirements.txt && pip install --force-reinstall torch==1.10.2"
-
-# # Copy application files
-
-
-# Install dependencies using conda
-# RUN conda env create -f kas-environment.yml
-# RUN pip install -e pathway_search_standalone/rxn_cluster_token_prompt
-
-# Activate the environment
-# RUN conda create -n custom_env python=3.8 && \
-#     echo "conda activate custom_env" >> ~/.bashrc
-# ENV PATH /opt/conda/envs/custom_env/bin:$PATH
-
+# Compute expensive, able to be GPU-accelerated. It's a rigerous test of full functinoality.
 RUN python test_docker_build.py
 # Define default command
 CMD ["python", "test_docker_build.py"]
