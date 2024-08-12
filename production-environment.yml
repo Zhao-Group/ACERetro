@@ -1,4 +1,4 @@
-name: aceretro-from-env-v5
+name: aceretro-env
 channels:
   - tmap
   - conda-forge
