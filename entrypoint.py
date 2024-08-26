@@ -5,10 +5,12 @@ It takes input and returns output via Minio.
 """
 
 import argparse
+import io
 import sys
 import joblib
 import six
 import json
+import time
 from sfscore import SFScore
 from pathway_search_standalone.scripts.search_utils import hybridSearch, build_graph_from_async
 import networkx as nx
@@ -50,21 +52,18 @@ def build_graph_from_async_wrapper(explored_rxns, explored_nodes, start_node):
         print(g.nodes[gg])
     return graph_data
 
-def download_json_from_minio(minio_path):
+def download_json_from_minio(bucket: str ='', path: str=''):
     # Initialize the Minio client
     client = Minio(
-        "play.min.io",  # Replace with your Minio server address
-        access_key="YOUR-ACCESSKEYID",  # Replace with your access key
-        secret_key="YOUR-SECRETACCESSKEY",  # Replace with your secret key
-        secure=True  # Set to False if not using HTTPS
+        os.environ['MINIO_URL'],  
+        access_key=os.environ['MINIO_ACCESS_KEY'],
+        secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
+        secure=True
     )
-
-    # Parse the bucket name and object name from the minio_path
-    bucket_name, object_name = os.path.split(minio_path)
 
     try:
         # Get the object from Minio
-        response = client.get_object(bucket_name, object_name)
+        response = client.get_object(bucket, path)
         # Read the data from the response
         data = response.read()
         # Parse the JSON data
@@ -73,24 +72,21 @@ def download_json_from_minio(minio_path):
         print("Error occurred.", e)
         raise
 
-def upload_json_to_minio(data, minio_path):
+def upload_json_to_minio(data, bucket: str ='', path: str=''):
     # Initialize the Minio client
     client = Minio(
-        "play.min.io",  # Replace with your Minio server address
-        access_key="YOUR-ACCESSKEYID",  # Replace with your access key
-        secret_key="YOUR-SECRETACCESSKEY",  # Replace with your secret key
-        secure=True  # Set to False if not using HTTPS
+        os.environ['MINIO_URL'],  
+        access_key=os.environ['MINIO_ACCESS_KEY'],
+        secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
+        secure=True
     )
-
-    # Parse the bucket name and object name from the minio_path
-    bucket_name, object_name = os.path.split(minio_path)
 
     try:
         # Convert data to JSON
         json_data = json.dumps(data).encode('utf-8')
         # Upload the JSON data to Minio
-        client.put_object(bucket_name, object_name, data=io.BytesIO(json_data), length=len(json_data), content_type='application/json')
-        print(f"Successfully uploaded results to {minio_path}")
+        client.put_object(bucket, path, data=io.BytesIO(json_data), length=len(json_data), content_type='application/json')
+        print(f"Successfully uploaded results to {bucket}/{path}")
     except S3Error as e:
         print("Error occurred while uploading.", e)
         raise
@@ -99,20 +95,29 @@ def main():
     parser = argparse.ArgumentParser(description="Run various chemical analysis functions.")
     # parser.add_argument('function', choices=['score_from_smi', 'get_chemoenzy_path_async', 'build_graph_from_async'],
     #                     help='Function to run')
-    parser.add_argument('--minio_path', required=True, help='Minio path to the JSON file containing input parameters')
+    parser.add_argument('--job_id', required=True, help='Minio path to the JSON file containing input parameters')
     args = parser.parse_args()
 
     # Download the JSON file from Minio
-    params = download_json_from_minio(args.minio_path)
+    # TODO: Get env vars for Minio
+    # params = download_json_from_minio(bucket='aceretro', path=f"/{args.job_id}/in/input.json")
+
+    params = {
+        'smiles': 'O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO',
+    }
 
     results = {}
-    if args.function == 'score_from_smi':
-        if 'smiles' not in params:
-            parser.error("The JSON file must contain 'smiles' for score_from_smi")
+    start_time = time.monotonic()
+    if 'smiles' not in params:
+        parser.error("❌ Error: The input JSON file must contain 'smiles' for score_from_smi")
+    else: 
         results['sfscore'] = score_from_smi(params['smiles'])
-    elif args.function == 'get_chemoenzy_path_async':
-        if 'smiles' not in params:
-            parser.error("The JSON file must contain 'smiles' for get_chemoenzy_path_async")
+        print(f"[1/3] Completed score_from_smi(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    
+    start_time = time.monotonic()
+    if 'smiles' not in params:
+        parser.error("❌ Error: The input JSON file must contain 'smiles' for get_chemoenzy_path_async")
+    else: 
         explored_rxns, explored_nodes, start_node = get_chemoenzy_path_async(
             params['smiles'], params.get('max_depth', 10), params.get('chem_topk', 10), 
             params.get('max_num_templates', 250), params.get('max_branching', 15), 
@@ -121,16 +126,18 @@ def main():
         results['explored_rxns'] = explored_rxns
         results['explored_nodes'] = explored_nodes
         results['start_node'] = start_node
-        print("Completed get_chemoenzy_path_async()")
-    elif args.function == 'build_graph_from_async':
-        if 'explored_rxns' not in params or 'explored_nodes' not in params or 'start_node' not in params:
-            parser.error("The JSON file must contain 'explored_rxns', 'explored_nodes', and 'start_node' for build_graph_from_async")
-        results['graph'] = build_graph_from_async_wrapper(params['explored_rxns'], params['explored_nodes'], params['start_node'])
-        print("Completed build_graph_from_async()")
+        print(f"[2/3] Completed get_chemoenzy_path_async(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
 
+    start_time = time.monotonic()
+    if 'explored_rxns' not in results or 'explored_nodes' not in results or 'start_node' not in results:
+        parser.error("❌ Error: The results dictionary must contain 'explored_rxns', 'explored_nodes', and 'start_node' for build_graph_from_async")
+    else: 
+        results['graph'] = build_graph_from_async_wrapper(results['explored_rxns'], results['explored_nodes'], results['start_node'])
+        print(f"[3/3] build_graph_from_async(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    
     # Upload the results to Minio
-    job_id: str = args.minio_path.split('/')[0].split('.')[0] # get ID from string like: `10b5006a-9851-43ef-b940-90305dade8c7/in/input.json`
-    upload_json_to_minio(results, f"{job_id}/out/output.json")
+    # TODO: Get env vars for Minio
+    # upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.json")
 
 if __name__ == "__main__":
     main()
