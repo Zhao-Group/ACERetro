@@ -6,6 +6,7 @@ It takes input and returns output via Minio.
 
 import argparse
 import pickle
+import numpy as np
 import io
 import sys
 import joblib
@@ -81,20 +82,26 @@ def upload_json_to_minio(data, bucket: str ='', path: str=''):
         secure=True
     )
 
-    try:
-        # # Convert data to JSON
-        # json_data = json.dumps(data).encode('utf-8')
-        # # Upload the JSON data to Minio
-        # client.put_object(bucket, path, data=io.BytesIO(json_data), length=len(json_data), content_type='application/json')
-        
-        # Serialize data to binary using pickle
-        binary_data = pickle.dumps(data)
-        # Upload the binary data to Minio
-        client.put_object(bucket, path, data=io.BytesIO(binary_data), length=len(binary_data), content_type='application/octet-stream')
-        print(f"Successfully uploaded results to {bucket}/{path}")
-    except S3Error as e:
-        print("Error occurred while uploading.", e)
-        raise
+    json_data = json.dumps(convert_to_json_serializable(data)).encode('utf-8')
+    client.put_object(bucket, path, data=io.BytesIO(json_data), length=len(json_data), content_type='application/json')
+    print(f"Successfully uploaded results to {bucket}{path}")
+
+def numpy_to_python(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, dict):
+        return {k: numpy_to_python(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [numpy_to_python(item) for item in obj]
+    else:
+        return obj
+
+def convert_to_json_serializable(data):
+    return json.loads(json.dumps(data, default=numpy_to_python))
 
 def main():
     parser = argparse.ArgumentParser(description="Run various chemical analysis functions.")
@@ -143,8 +150,7 @@ def main():
     
     # Upload the results to Minio
     try:
-        upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.pickle")
-        print(f"Uploaded results to minio: bucket=aceretro, path=/{args.job_id}/out/output.pickle")
+        upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.json")
     except Exception as e: 
         print(f"Failed to upload results to Minio with error: {e}")
 
