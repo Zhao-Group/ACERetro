@@ -55,6 +55,28 @@ def build_graph_from_async_wrapper(explored_rxns, explored_nodes, start_node):
         print(g.nodes[gg])
     return graph_data
 
+def add_smiles_svgs_to_json(json_graph):
+    """
+    Observation: 36 of 66 objects in the graph dictionary do not contain a smiles string. And it happens to be that the "whole first half" have it and "the 2nd half" don't have it.
+    """
+    from draw_chemical_svg import draw_chemical_svg
+    errors = 0
+    total_count = 0
+
+    for index, data in json_graph['graph'].items():
+        total_count += 1
+        try: 
+            smile = data['smiles']
+            # print("Building SVG for smile: ", smile)
+            svg = draw_chemical_svg(smile)
+            json_graph['graph'][index]['smiles_svg'] = svg
+        except Exception as e: 
+            errors += 1
+            # print("ERROR drawing svg for SMILE:", data.get('smiles', 'No SMILES provided'))
+    # print("Total errors: ", errors)
+    # print("Total count: ", total_count)
+    return json_graph
+
 def download_json_from_minio(bucket: str ='', path: str=''):
     client = Minio(
         os.environ['MINIO_URL'],  
@@ -147,6 +169,12 @@ def main():
     else: 
         results['graph'] = build_graph_from_async_wrapper(results['explored_rxns'], results['explored_nodes'], results['start_node'])
         print(f"[3/3] build_graph_from_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    
+
+    # Generate SVGs of the Smiles strings
+    start_time = time.monotonic()
+    results = add_smiles_svgs_to_json(results)
+    print(f"[4/3] add_smiles_svgs_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
     # Upload the results to Minio
     try:
