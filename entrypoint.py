@@ -19,6 +19,7 @@ sys.modules['sklearn.externals.six'] = six
 
 from sfscore import SFScore
 from pathway_search_standalone.scripts.search_utils import hybridSearch, build_graph_from_async
+from enzy_template_id_search import add_EC_Number_to_json, add_major_precursor_to_json
 import networkx as nx
 from minio import Minio
 from minio.error import S3Error
@@ -66,7 +67,11 @@ def add_smiles_svgs_to_json(json_graph):
     for index, data in json_graph['graph'].items():
         total_count += 1
         try: 
-            smile = data['smiles']
+            if (data['type'] == 'chemical'):
+                smile = index
+            else: 
+                continue
+            # smile = data['smiles']
             # print("Building SVG for smile: ", smile)
             svg = draw_chemical_svg(smile)
             json_graph['graph'][index]['smiles_svg'] = svg
@@ -147,7 +152,7 @@ def main():
         parser.error("xxx Error: The input JSON file must contain 'smiles' for score_from_smi")
     else: 
         results['sfscore'] = score_from_smi(params['smiles'])
-        print(f"[1/3] Completed score_from_smi(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+        print(f"[1/6] Completed score_from_smi(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
     start_time = time.monotonic()
     if 'smiles' not in params:
@@ -161,26 +166,40 @@ def main():
         results['explored_rxns'] = explored_rxns
         results['explored_nodes'] = explored_nodes
         results['start_node'] = start_node
-        print(f"[2/3] Completed get_chemoenzy_path_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+        print(f"[2/6] Completed get_chemoenzy_path_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
 
     start_time = time.monotonic()
     if 'explored_rxns' not in results or 'explored_nodes' not in results or 'start_node' not in results:
         parser.error("xxx Error: The results dictionary must contain 'explored_rxns', 'explored_nodes', and 'start_node' for build_graph_from_async")
     else: 
         results['graph'] = build_graph_from_async_wrapper(results['explored_rxns'], results['explored_nodes'], results['start_node'])
-        print(f"[3/3] build_graph_from_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+        print(f"[3/6] build_graph_from_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
 
     # Generate SVGs of the Smiles strings
     start_time = time.monotonic()
     results = add_smiles_svgs_to_json(results)
-    print(f"[4/3] add_smiles_svgs_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    print(f"[4/6] add_smiles_svgs_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+
+
+    # Add major precursor to json
+    start_time = time.monotonic()
+    results = add_major_precursor_to_json(results)
+    print(f"[5/6] add_major_precursor_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    
+    
+    # Add EC numbers for enzymatic reactions (all enzymatic reactions are "major precursors")
+    start_time = time.monotonic()
+    results = add_EC_Number_to_json(results)
+    print(f"[6/6] add_EC_Number_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
     # Upload the results to Minio
     try:
         upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.json")
+        sys.exit(0)
     except Exception as e: 
         print(f"Failed to upload results to Minio with error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

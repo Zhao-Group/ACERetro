@@ -176,6 +176,7 @@ dependencies:
       # - rxn-opennmt-py==1.1.5
       - rxn-utils==1.6.0
       # - rxnfp==0.0.9
+      - rxnmapper==0.4.0
       - sacrebleu==2.4.2
       - sacremoses==0.0.53
       - scikit-learn==0.23.1
