@@ -19,20 +19,17 @@ def add_EC_Number_to_json(json_file: dict):
         for el in data: 
             total_count += 1
             try: 
-                print("el: --------------------------", type(el))
-                print(el)
-                print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                 if el.get('is_major_precursor') and el.get('template_id') and el.get('smiles'):
-                    print("Building template thing for smile: ", el['is_major_precursor'][0])
+                    # print("Building template thing for smile: ", el['is_major_precursor'][0])
                     res = enzy_template_id_search(el['template_id'], el['smiles'])
                     json_file['explored_rxns'][index][0]['EC_Number'] = res.EC_Number
                     total_successes += 1
             except Exception as e: 
                 errors += 1
                 print("ERROR add_EC_Number_to_json. Error:", e, "smiles:", el['smiles'], "precursor:", el['is_major_precursor'][0])
-    print("Total errors: ", errors)
-    print("Total successes: ", total_successes)
-    print("Total count: ", total_count)
+    # print("Total errors: ", errors)
+    # print("Total successes: ", total_successes)
+    # print("Total count: ", total_count)
     return json_file
 
 

@@ -5,8 +5,9 @@ It takes input and returns output via Minio.
 """
 
 import argparse
-import pickle
+import requests
 import numpy as np
+import base64
 import io
 import sys
 import joblib
@@ -75,6 +76,9 @@ def add_smiles_svgs_to_json(json_graph):
             # print("Building SVG for smile: ", smile)
             svg = draw_chemical_svg(smile)
             json_graph['graph'][index]['smiles_svg'] = svg
+
+            # Add common name
+            json_graph['graph'][index]['common_name'] = get_common_name_from_smiles(smile)
         except Exception as e: 
             errors += 1
             # print("ERROR drawing svg for SMILE:", data.get('smiles', 'No SMILES provided'))
@@ -120,6 +124,8 @@ def numpy_to_python(obj):
         return int(obj)
     elif isinstance(obj, np.floating):
         return float(obj)
+    elif isinstance(obj, bytes):
+        return base64.b64encode(obj).decode('utf-8')
     elif isinstance(obj, dict):
         return {k: numpy_to_python(v) for k, v in obj.items()}
     elif isinstance(obj, list):
@@ -129,6 +135,28 @@ def numpy_to_python(obj):
 
 def convert_to_json_serializable(data):
     return json.loads(json.dumps(data, default=numpy_to_python))
+
+def get_common_name_from_smiles(smiles):
+    # Step 1: Get the CID from the SMILES string
+    cid_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/{smiles}/cids/JSON"
+    response = requests.get(cid_url)
+    if response.status_code != 200 or 'IdentifierList' not in response.json():
+        return f"Error fetching CID for SMILES: {smiles}"
+    
+    cid = response.json()['IdentifierList']['CID'][0]
+
+    # Step 2: Get the common name using the CID
+    name_url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/IUPACName,Title/JSON"
+    response = requests.get(name_url)
+    if response.status_code != 200 or 'PropertyTable' not in response.json():
+        return f"Error fetching common name for CID: {cid}"
+    
+    properties = response.json()['PropertyTable']['Properties'][0]
+    # iupac_name = properties.get('IUPACName', 'N/A')
+    title = properties.get('Title', 'N/A')
+
+    # Return common name.
+    return title
 
 def main():
     parser = argparse.ArgumentParser(description="Run various chemical analysis functions.")
@@ -181,18 +209,21 @@ def main():
     results = add_smiles_svgs_to_json(results)
     print(f"[4/6] add_smiles_svgs_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
 
-
     # Add major precursor to json
     start_time = time.monotonic()
     results = add_major_precursor_to_json(results)
     print(f"[5/6] add_major_precursor_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
-    
     # Add EC numbers for enzymatic reactions (all enzymatic reactions are "major precursors")
     start_time = time.monotonic()
     results = add_EC_Number_to_json(results)
     print(f"[6/6] add_EC_Number_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
-    
+
+    # Save a file
+    # with open("output_complete_sep_26.json", "w") as f:
+    #     json_data = json.dumps(convert_to_json_serializable(results))
+    #     f.write(json_data)
+
     # Upload the results to Minio
     try:
         upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.json")

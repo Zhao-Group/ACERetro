@@ -24,13 +24,14 @@ RUN conda env create -f production-environment.yml
 
 # Activate the environment
 RUN echo "conda activate aceretro-env" >> ~/.bashrc
-ENV PATH /opt/conda/envs/aceretro-env/bin:$PATH
+ENV PATH="/opt/conda/envs/aceretro-env/bin:$PATH"
 
-# Minor installs and a huge file copy to retail model files (.pt, pytorch )
+# Installs that can't be in production-environment.yaml because Conda refuses to install w/ dependency conflicts.
 RUN pip install opennmt-py==2.3.0
 # Copy just a sub-folder to optimize docker layers cache
 COPY ./pathway_search_standalone/rxn_cluster_token_prompt /app/pathway_search_standalone/rxn_cluster_token_prompt
 RUN pip install -e pathway_search_standalone/rxn_cluster_token_prompt
+RUN pip install rxnmapper==0.4.0
 
 COPY . /app
 
