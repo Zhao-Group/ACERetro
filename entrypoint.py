@@ -20,7 +20,7 @@ sys.modules['sklearn.externals.six'] = six
 
 from sfscore import SFScore
 from pathway_search_standalone.scripts.search_utils import hybridSearch, build_graph_from_async
-from enzy_template_id_search import add_EC_Number_to_json, add_major_precursor_to_json
+from enzy_template_id_search import add_EC_Number_to_json, add_major_precursor_to_json, v2_add_major_precursor_to_json, v2_add_EC_Number_to_json
 import networkx as nx
 from minio import Minio
 from minio.error import S3Error
@@ -211,12 +211,13 @@ def main():
 
     # Add major precursor to json
     start_time = time.monotonic()
-    results = add_major_precursor_to_json(results)
+    # results = add_major_precursor_to_json(results)
+    results = v2_add_major_precursor_to_json(results)
     print(f"[5/6] add_major_precursor_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
     
     # Add EC numbers for enzymatic reactions (all enzymatic reactions are "major precursors")
     start_time = time.monotonic()
-    results = add_EC_Number_to_json(results)
+    results = v2_add_EC_Number_to_json(results)
     print(f"[6/6] add_EC_Number_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
 
     # Save a file
