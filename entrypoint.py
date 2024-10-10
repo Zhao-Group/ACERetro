@@ -20,7 +20,7 @@ sys.modules['sklearn.externals.six'] = six
 
 from sfscore import SFScore
 from pathway_search_standalone.scripts.search_utils import hybridSearch, build_graph_from_async
-from enzy_template_id_search import add_EC_Number_to_json, add_major_precursor_to_json, v2_add_major_precursor_to_json, v2_add_EC_Number_to_json
+from enzy_template_id_search import v2_add_major_precursor_to_json, v2_add_EC_Number_to_json
 import networkx as nx
 from minio import Minio
 from minio.error import S3Error
