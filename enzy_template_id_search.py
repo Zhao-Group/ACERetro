@@ -6,7 +6,7 @@ from rxnmapper import RXNMapper # pip install rxnmapper
 from rdkit.Chem import AllChem as Chem
 from rdkit import DataStructs
 
-def add_EC_Number_to_json(json_file: dict): 
+def add_EC_Number_to_json(json_file: dict):
     """
     Input: python dictionary object
 
@@ -16,15 +16,15 @@ def add_EC_Number_to_json(json_file: dict):
     errors = 0
     for index, data in json_file['explored_rxns'].items():
         # data is a list of dicts. each dict is a molecule... or similar.
-        for el in data: 
+        for el in data:
             total_count += 1
-            try: 
+            try:
                 if el.get('is_major_precursor') and el.get('template_id') and el.get('smiles'):
                     # print("Building template thing for smile: ", el['is_major_precursor'][0])
                     res = enzy_template_id_search(el['template_id'], el['smiles'])
                     json_file['explored_rxns'][index][0]['EC_Number'] = res.EC_Number
                     total_successes += 1
-            except Exception as e: 
+            except Exception as e:
                 errors += 1
                 print("ERROR add_EC_Number_to_json. Error:", e, "smiles:", el['smiles'], "precursor:", el['is_major_precursor'][0])
     # print("Total errors: ", errors)
@@ -70,11 +70,11 @@ def enzy_template_id_search(template_id, target_mol):
     Returns:
     DataFrame Row: The row from the template DataFrame corresponding to the most similar molecule.
     """
-    
+
     templates = pd.read_json('bkms-retro.templates.bkms.json.gz')
     template_df = pd.read_json('bkms-templates.df.json.gz')
     index = int(templates[templates['_id']==template_id]['index'])
-    
+
     ref_mol = Chem.MolFromSmiles(target_mol)
     ref_fp = Chem.GetMorganFingerprintAsBitVect(ref_mol, 2, nBits=1024)
 

@@ -1,3 +1,42 @@
+# Building the image with docker slim. See my corresponding blog post: https://kastanday.com/docker-slim
+# sudo docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock \
+#   dslim/slim build \
+#   --target kastanday/aceretro:prod \
+#   --tag kastanday/aceretro:slimer \
+#   --http-probe=false \
+#   --include-path=/opt/conda/envs/aceretro-env/lib/python3.6 \
+#   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/rxn_cluster_token_prompt/ \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/__init__.py \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/global_config.py \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/__pycache__ \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/application \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/global_config.py \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/interfaces \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/prioritization \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/retrosynthetic \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/synthetic \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/utilities \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/data/bkms-data/models/bkms/1 \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/data/bkms-data/templates/bkms-and-reaxys-templates.json.gz \
+#   --include-path=/app/pathway_search_standalone/askcos-core/askcos/data/models/fast_filter/1 \
+#   --include-path=/app/pathway_search_standalone/scripts \
+#   --include-path=/app/enzy_template_id_search.py \
+#   --include-path=/app/draw_chemical_svg.py \
+#   --include-path=/app/bkms-retro.templates.bkms.json.gz \
+#   --include-path=/app/bkms-templates.df.json.gz \
+#   --include-path=/app/process_reaction_database/saved_model/ecfp4_4096_3_layer_epoch10.pt \
+#   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/class_token_retro_std_pistachio_201002_12tokens_with-reagents_step_260000.pt \
+#   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/data_balancing_forward_std_pistachio_201002_with-reagents_augm-rot-rotmolorder_step_255000.pt \
+#   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/data_balancing_classification_std_pistachio_201002_seq2seq_alone_step_500000.pt \
+#   --include-bin=/usr/lib/x86_64-linux-gnu/libXrender.so.1 \
+#   --include-path=/usr/lib/x86_64-linux-gnu \
+#   --include-shell \
+#   --include-oslibs-net \
+#   --env MINIO_URL=XXX \
+#   --env MINIO_ACCESS_KEY=XXX \
+#   --env MINIO_SECRET_ACCESS_KEY=XXX \
+#   --exec "python entrypoint.py --job_id 21"
+
 FROM ubuntu:22.04
 
 WORKDIR /app

@@ -67,10 +67,10 @@ def add_smiles_svgs_to_json(json_graph):
 
     for index, data in json_graph['graph'].items():
         total_count += 1
-        try: 
+        try:
             if (data['type'] == 'chemical'):
                 smile = index
-            else: 
+            else:
                 continue
             # smile = data['smiles']
             # print("Building SVG for smile: ", smile)
@@ -79,7 +79,7 @@ def add_smiles_svgs_to_json(json_graph):
 
             # Add common name
             json_graph['graph'][index]['common_name'] = get_common_name_from_smiles(smile)
-        except Exception as e: 
+        except Exception as e:
             errors += 1
             # print("ERROR drawing svg for SMILE:", data.get('smiles', 'No SMILES provided'))
     # print("Total errors: ", errors)
@@ -88,7 +88,7 @@ def add_smiles_svgs_to_json(json_graph):
 
 def download_json_from_minio(bucket: str ='', path: str=''):
     client = Minio(
-        os.environ['MINIO_URL'],  
+        os.environ['MINIO_URL'],
         access_key=os.environ['MINIO_ACCESS_KEY'],
         secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
         secure=True
@@ -107,7 +107,7 @@ def download_json_from_minio(bucket: str ='', path: str=''):
 
 def upload_json_to_minio(data, bucket: str ='', path: str=''):
     client = Minio(
-        os.environ['MINIO_URL'],  
+        os.environ['MINIO_URL'],
         access_key=os.environ['MINIO_ACCESS_KEY'],
         secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
         secure=True
@@ -142,7 +142,7 @@ def get_common_name_from_smiles(smiles):
     response = requests.get(cid_url)
     if response.status_code != 200 or 'IdentifierList' not in response.json():
         return f"Error fetching CID for SMILES: {smiles}"
-    
+
     cid = response.json()['IdentifierList']['CID'][0]
 
     # Step 2: Get the common name using the CID
@@ -150,7 +150,7 @@ def get_common_name_from_smiles(smiles):
     response = requests.get(name_url)
     if response.status_code != 200 or 'PropertyTable' not in response.json():
         return f"Error fetching common name for CID: {cid}"
-    
+
     properties = response.json()['PropertyTable']['Properties'][0]
     # iupac_name = properties.get('IUPACName', 'N/A')
     title = properties.get('Title', 'N/A')
@@ -164,10 +164,10 @@ def main():
     args = parser.parse_args()
 
     params = None
-    try: 
+    try:
         # Download the input JSON file from Minio
         params = download_json_from_minio(bucket='aceretro', path=f"/{args.job_id}/in/input.json")
-    except Exception as e: 
+    except Exception as e:
         print(f"xxx Failed to download input from Minio with error: {e}")
         print("WARNING: FALLING BACK TO PLACEHOLDER DEFAULT SMILES STRING... `O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO`")
         params = {
@@ -178,17 +178,17 @@ def main():
     start_time = time.monotonic()
     if 'smiles' not in params:
         parser.error("xxx Error: The input JSON file must contain 'smiles' for score_from_smi")
-    else: 
+    else:
         results['sfscore'] = score_from_smi(params['smiles'])
         print(f"[1/6] Completed score_from_smi(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
-    
+
     start_time = time.monotonic()
     if 'smiles' not in params:
         parser.error("xxx Error: The input JSON file must contain 'smiles' for get_chemoenzy_path_async")
-    else: 
+    else:
         explored_rxns, explored_nodes, start_node = get_chemoenzy_path_async(
-            params['smiles'], params.get('max_depth', 10), params.get('chem_topk', 10), 
-            params.get('max_num_templates', 250), params.get('max_branching', 15), 
+            params['smiles'], params.get('max_depth', 10), params.get('chem_topk', 10),
+            params.get('max_num_templates', 250), params.get('max_branching', 15),
             params.get('time_lim', 20)
         )
         results['explored_rxns'] = explored_rxns
@@ -199,10 +199,10 @@ def main():
     start_time = time.monotonic()
     if 'explored_rxns' not in results or 'explored_nodes' not in results or 'start_node' not in results:
         parser.error("xxx Error: The results dictionary must contain 'explored_rxns', 'explored_nodes', and 'start_node' for build_graph_from_async")
-    else: 
+    else:
         results['graph'] = build_graph_from_async_wrapper(results['explored_rxns'], results['explored_nodes'], results['start_node'])
         print(f"[3/6] build_graph_from_async(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
-    
+
 
     # Generate SVGs of the Smiles strings
     start_time = time.monotonic()
@@ -214,7 +214,7 @@ def main():
     # results = add_major_precursor_to_json(results)
     results = v2_add_major_precursor_to_json(results)
     print(f"[5/6] add_major_precursor_to_json(). Runtime: {(time.monotonic() - start_time):.2f} seconds")
-    
+
     # Add EC numbers for enzymatic reactions (all enzymatic reactions are "major precursors")
     start_time = time.monotonic()
     results = v2_add_EC_Number_to_json(results)
@@ -229,7 +229,7 @@ def main():
     try:
         upload_json_to_minio(results, bucket='aceretro', path=f"/{args.job_id}/out/output.json")
         sys.exit(0)
-    except Exception as e: 
+    except Exception as e:
         print(f"Failed to upload results to Minio with error: {e}")
         sys.exit(1)
 
