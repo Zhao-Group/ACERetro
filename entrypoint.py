@@ -87,11 +87,20 @@ def add_smiles_svgs_to_json(json_graph):
     return json_graph
 
 def download_json_from_minio(bucket: str ='', path: str=''):
+    print("MinIO URL", os.environ['MINIO_URL'])
+    print("MinIO Key", os.environ['MINIO_ACCESS_KEY'])
+    print("MinIO SECRET Key", os.environ['MINIO_SECRET_ACCESS_KEY'])
+    
+    MINIO_SECURE = os.environ['MINIO_SECURE'].lower() in ['true', '1', 'yes']    
+    print("MinIO SECURE environ", os.environ['MINIO_SECURE'])
+    print("MinIO SECURE after parsing", MINIO_SECURE)
+    print("MinIO type with bool() of SECURE", type(MINIO_SECURE))
+
     client = Minio(
         os.environ['MINIO_URL'],
         access_key=os.environ['MINIO_ACCESS_KEY'],
         secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
-        secure=True
+        secure=MINIO_SECURE
     )
 
     try:
@@ -102,15 +111,24 @@ def download_json_from_minio(bucket: str ='', path: str=''):
         # Parse the JSON data
         return json.loads(data)
     except S3Error as e:
-        print("Error occurred.", e)
+        print("Error occurred downloading Json input from MinIO.", e)
         raise
 
 def upload_json_to_minio(data, bucket: str ='', path: str=''):
+    print("MinIO URL", os.environ['MINIO_URL'])
+    print("MinIO Key", os.environ['MINIO_ACCESS_KEY'])
+    print("MinIO SECRET Key", os.environ['MINIO_SECRET_ACCESS_KEY'])
+    
+    MINIO_SECURE = os.environ['MINIO_SECURE'].lower() in ['true', '1', 'yes']    
+    print("MinIO SECURE environ", os.environ['MINIO_SECURE'])
+    print("MinIO SECURE after parsing", MINIO_SECURE)
+    print("MinIO type with bool() of SECURE", type(MINIO_SECURE))
+
     client = Minio(
         os.environ['MINIO_URL'],
         access_key=os.environ['MINIO_ACCESS_KEY'],
         secret_key=os.environ['MINIO_SECRET_ACCESS_KEY'],
-        secure=True
+        secure=MINIO_SECURE
     )
 
     json_data = json.dumps(convert_to_json_serializable(data)).encode('utf-8')
@@ -160,7 +178,7 @@ def get_common_name_from_smiles(smiles):
 
 def main():
     parser = argparse.ArgumentParser(description="Run various chemical analysis functions.")
-    parser.add_argument('--job_id', required=True, help='Minio path to the JSON file containing input parameters')
+    parser.add_argument('--job_id', required=True, help='Job ID as it exists in the mmli-backend service.')
     args = parser.parse_args()
 
     params = None

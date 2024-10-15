@@ -1,4 +1,6 @@
 # Building the image with docker slim. See my corresponding blog post: https://kastanday.com/docker-slim
+# First build the base image sudo docker build -t kastanday/aceretro:prod . 
+# then slim it down (make sure to add the 4 MINIO env vars):
 # sudo docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock \
 #   dslim/slim build \
 #   --target kastanday/aceretro:prod \
@@ -35,6 +37,7 @@
 #   --env MINIO_URL=XXX \
 #   --env MINIO_ACCESS_KEY=XXX \
 #   --env MINIO_SECRET_ACCESS_KEY=XXX \
+#   --env MINIO_SECURE=False \
 #   --exec "python entrypoint.py --job_id 21"
 
 FROM ubuntu:22.04
