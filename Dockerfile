@@ -30,8 +30,9 @@
 #   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/class_token_retro_std_pistachio_201002_12tokens_with-reagents_step_260000.pt \
 #   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/data_balancing_forward_std_pistachio_201002_with-reagents_augm-rot-rotmolorder_step_255000.pt \
 #   --include-path=/app/pathway_search_standalone/rxn_cluster_token_prompt/models/data_balancing_classification_std_pistachio_201002_seq2seq_alone_step_500000.pt \
-#   --include-bin=/usr/lib/x86_64-linux-gnu/libXrender.so.1 \
 #   --include-path=/usr/lib/x86_64-linux-gnu \
+#   --include-bin=/usr/lib/x86_64-linux-gnu/libXrender.so.1 \
+#   --include-bin=/usr/bin/touch \
 #   --include-shell \
 #   --include-oslibs-net \
 #   --env MINIO_URL=XXX \

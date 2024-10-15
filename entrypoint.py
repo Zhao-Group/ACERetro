@@ -186,11 +186,12 @@ def main():
         # Download the input JSON file from Minio
         params = download_json_from_minio(bucket='aceretro', path=f"/{args.job_id}/in/input.json")
     except Exception as e:
-        print(f"xxx Failed to download input from Minio with error: {e}")
-        print("WARNING: FALLING BACK TO PLACEHOLDER DEFAULT SMILES STRING... `O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO`")
-        params = {
-            'smiles': 'O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO',
-        }
+        raise ValueError(f"xxx Exiting... Failed to download input from MinIO with error: {e}")
+        # print(f"xxx Failed to download input from Minio with error: {e}")
+        # print("WARNING: FALLING BACK TO PLACEHOLDER DEFAULT SMILES STRING... `O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO`")
+        # params = {
+        #     'smiles': 'O=C(COP(=O)(O)O)[C@H](O)[C@H](O)CO',
+        # }
 
     results = {}
     start_time = time.monotonic()
