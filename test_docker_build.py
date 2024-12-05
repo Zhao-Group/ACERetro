@@ -1,3 +1,5 @@
+import time
+
 def score_from_smi():
     PROJECT_DIRECTORY = '/app/ACERetro'
     sfscore_path = PROJECT_DIRECTORY+'/sfscore' # replace PROJECT_DIRECTORY
@@ -41,9 +43,14 @@ def build_graph_from_async(explored_rxns,explored_nodes,start_node):
         print(g.nodes[gg])
 
 if __name__ == "__main__":
-    score_from_smi()
-    print("[1/3] Completed score_from_smi()")
-    explored_rxns, explored_nodes, start_node = get_chemoenzy_path_async()
-    print("[2/3] Completed get_chemoenzy_path_async()")
-    build_graph_from_async(explored_rxns, explored_nodes, start_node)
-    print("[3/3] build_graph_from_async()")
+    start_time = time.monotonic()
+    score_from_smi() # 0.86 seconds
+    print(f"[1/3] Completed score_from_smi(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
+
+    start_time = time.monotonic()
+    explored_rxns, explored_nodes, start_node = get_chemoenzy_path_async() # configurable time, currently 180 time limit --> 199.35 sec runtime.
+    print(f"[2/3] Completed get_chemoenzy_path_async(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
+    
+    start_time = time.monotonic()
+    build_graph_from_async(explored_rxns, explored_nodes, start_node) # 0.09 seconds
+    print(f"[3/3] build_graph_from_async(). ⏰ Runtime: {(time.monotonic() - start_time):.2f} seconds")
