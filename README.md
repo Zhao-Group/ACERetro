@@ -30,10 +30,21 @@ Operating systems
 
 `./sfscore/sfscore.py` shows the basic usage. If you want to use SFScore elsewhere, follow the steps below.
 
+#### Method 1 (Recommended)
+Git clone this repository and cd to the project folder.
+```bash
+conda create -n sfscore_train python=3.9
+conda activate sfscore_train
+conda install -c tmap tmap
+pip install -r ./process_reaction_database/requirements.txt
+```
+
+#### Method 2 (Deprecated)
 Create Conda environment though `conda env create -f ./process_reaction_database/environment.yml`
 
 Activate Conda environment `conda activate sfscore_train`
 
+#### Quick Start
 ```python
 sfscore_path = [PROJECT_DIRECTORY]/'sfscore' # replace PROJECT_DIRECTORY
 import sys
