@@ -10,7 +10,7 @@ import json
 
 import sys
 from pathlib import Path
-from scripts.directory_utils import project_directory
+from pathway_search_standalone.scripts.directory_utils import project_directory
 
 print('project_directory: ', project_directory())
 askcos_core_path = project_directory()/'pathway_search_standalone'/'askcos-core'
@@ -20,6 +20,8 @@ sfscore_path = project_directory()/'sfscore'
 sys.path.append(str(askcos_core_path))
 sys.path.append(str(rxn_cluster_path))
 sys.path.append(str(sfscore_path))
+rxn_cluster_parent_path = project_directory()/'pathway_search_standalone'
+sys.path.append(str(rxn_cluster_parent_path))
 
 from sfscore import SFScore
 from rxn_cluster_token_prompt.model import RXNClusterTokenPrompt
@@ -260,8 +262,8 @@ class hybridSearch:
             depth = 0
         try:
             rxn4chem_result = self.get_rxn4chem_result(smiles,fap=fap)
-        except:
-            print("Error on RXN4Chemistry!")
+        except Exception as e:
+            print("Error on RXN4Chemistry!", e)
             return [],[]
         # print('SUCCESS')
         rxn4chem_result = rxn4chem_result[:chem_topk]
