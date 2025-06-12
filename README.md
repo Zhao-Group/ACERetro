@@ -8,13 +8,13 @@
 </div>
 
 
-# Synthetic field guided asynchronous chemoenzymatic synthesis planning 
+# Chemoenzymatic synthesis planning guided by synthetic potential score 
 
-This repository includes the scripts used for the manuscript **"Synthetic field guided asynchronous chemoenzymatic synthesis planning."**
+This repository includes the scripts used for the manuscript **"Chemoenzymatic synthesis planning guided by synthetic potential score (formerly Synthetic Field Score, SFScore)."** 
 
 **AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool. 
 
-## Synthetic Field Score (SFScore)
+## Synthetic Potential Score, SPScore (formerly Synthetic Field Score, SFScore)
 
 ### Usage
 Dependencies
