@@ -1,20 +1,16 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10578664.svg)](https://doi.org/10.5281/zenodo.10578664)
+# Chemoenzymatic synthesis planning guided by synthetic potential score 
 
-<div align='center'>
-<picture>
-  <source srcset="assets/aceretro_logo.png" width='50%'>
-  <img alt="ACERetro logo" src="/assets/" width="50%" >
-</picture>
-</div>
+<p align="center">
+   <a href="https://github.com/xuanliugit/ACERetro" target="_blank">🌐 Code</a> | <a href="https://doi.org/10.1039/D5DD00008D" target="_blank">📃 Paper </a>
+</p>
 
+This repository includes the scripts used for the manuscript **["Chemoenzymatic synthesis planning guided by synthetic potential score."](https://doi.org/10.1039/D5DD00008D)** 
 
-# Synthetic field guided asynchronous chemoenzymatic synthesis planning 
+**AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool that uitilize Synthetic Potential to advance the synthesis planning algorithms. 
 
-This repository includes the scripts used for the manuscript **"Synthetic field guided asynchronous chemoenzymatic synthesis planning."**
+![](./assets/toc.png)
 
-**AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool. 
-
-## Synthetic Field Score (SFScore)
+## Synthetic Potential Score, SPScore (formerly Synthetic Field Score, SFScore)
 
 ### Usage
 Dependencies
@@ -30,10 +26,21 @@ Operating systems
 
 `./sfscore/sfscore.py` shows the basic usage. If you want to use SFScore elsewhere, follow the steps below.
 
+#### Method 1 (Recommended)
+Git clone this repository and cd to the project folder.
+```bash
+conda create -n sfscore_train python=3.9
+conda activate sfscore_train
+conda install -c tmap tmap
+pip install -r ./process_reaction_database/requirements.txt
+```
+
+#### Method 2 (Deprecated)
 Create Conda environment though `conda env create -f ./process_reaction_database/environment.yml`
 
 Activate Conda environment `conda activate sfscore_train`
 
+#### Quick Start
 ```python
 sfscore_path = [PROJECT_DIRECTORY]/'sfscore' # replace PROJECT_DIRECTORY
 import sys

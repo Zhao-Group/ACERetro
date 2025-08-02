@@ -114,3 +114,31 @@ def print_rxns_list(spg_dict,prioritizer,smi,rxns_list):
         product_sfscore = spg_dict[smi][prioritizer].nodes[product]['sfscore']
         print('Product SFSCore:',np.round(product_sfscore,3),model,': ',rxn)
         display(img)
+        
+def build_graph_from_async(explored_rxns, explored_nodes, start_node):
+    '''
+    return:
+        dict for nx.node_link_graph
+    '''
+    data = {'directed': True, 'multigraph': False, 'graph': {}, 'nodes': [], 'links': []}
+    data['nodes'].append(start_node)
+    all_rxns = list(explored_rxns.values())
+    all_nodes = list(explored_nodes.values())
+    all_rxns_flatten = [rxn for sublist in all_rxns for rxn in sublist]
+    all_nodes_flatten = [node for sublist in all_nodes for node in sublist if node['id']!=start_node['id']]
+    data['nodes'].extend(all_rxns_flatten)
+    data['nodes'].extend(all_nodes_flatten)
+    for rxn in all_rxns_flatten:
+        product = rxn['id'].split('>>')[-1]
+        product_link = {'target':product, 'source':rxn['id']}
+        data['links'].append(product_link)
+        reactants = rxn['id'].split('>>')[0]
+        if '.' in reactants:
+            if start_node['id'] not in reactants.split('.'):
+                for reactant in reactants.split('.'):
+                    reactant_link = {'target':rxn['id'], 'source':reactant}
+                    data['links'].append(reactant_link)
+        elif reactants != start_node['id']:
+            reactant_link = {'target':rxn['id'], 'source':reactants}
+            data['links'].append(reactant_link)
+    return data
