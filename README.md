@@ -1,18 +1,14 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10578664.svg)](https://doi.org/10.5281/zenodo.10578664)
-
-<div align='center'>
-<picture>
-  <source srcset="assets/aceretro_logo.png" width='50%'>
-  <img alt="ACERetro logo" src="/assets/" width="50%" >
-</picture>
-</div>
-
-
 # Chemoenzymatic synthesis planning guided by synthetic potential score 
 
-This repository includes the scripts used for the manuscript **"Chemoenzymatic synthesis planning guided by synthetic potential score (formerly Synthetic Field Score, SFScore)."** 
+<p align="center">
+   <a href="https://github.com/xuanliugit/ACERetro" target="_blank">🌐 Code</a> | <a href="https://doi.org/10.1039/D5DD00008D" target="_blank">📃 Paper </a>
+</p>
 
-**AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool. 
+This repository includes the scripts used for the manuscript **["Chemoenzymatic synthesis planning guided by synthetic potential score."](https://doi.org/10.1039/D5DD00008D)** 
+
+**AceRetro** (**A**synchronous **C**hemo**E**nzymatic **Retro**synthesis) is a computer-aided chemoenzymatic synthesis planning tool that uitilize Synthetic Potential to advance the synthesis planning algorithms. 
+
+![](./assets/toc.png)
 
 ## Synthetic Potential Score, SPScore (formerly Synthetic Field Score, SFScore)
 
