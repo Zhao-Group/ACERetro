@@ -1,7 +1,7 @@
 # Chemoenzymatic synthesis planning guided by synthetic potential score 
 
 <p align="center">
-   <a href="https://github.com/xuanliugit/ACERetro" target="_blank">🌐 Code</a> | <a href="https://doi.org/10.1039/D5DD00008D" target="_blank">📃 Paper </a>
+   <a href="https://github.com/xuanliugit/ACERetro" target="_blank">🌐 Code</a> | <a href="https://doi.org/10.1039/D5DD00008D" target="_blank">📃 Paper </a> | <a href="https://aceretro.platform.moleculemaker.org/search-routes" target="_blank"> 💻 Try it online</a>
 </p>
 
 This repository includes the scripts used for the manuscript **["Chemoenzymatic synthesis planning guided by synthetic potential score."](https://doi.org/10.1039/D5DD00008D)** 
